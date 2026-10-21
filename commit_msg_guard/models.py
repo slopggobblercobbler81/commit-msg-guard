@@ -20,6 +20,11 @@ class ConventionalCommit:
     is_merge_commit: bool = False
     is_revert_commit: bool = False
 
+    @property
+    def co_authors(self) -> List[str]:
+        """Extract list of co-authors from Co-authored-by footers."""
+        return [f[1] for f in self.footers if f[0].lower() in ("co-authored-by", "coauthored-by")]
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert commit representation to dictionary."""
         return {
@@ -30,6 +35,7 @@ class ConventionalCommit:
             "description": self.description,
             "body": self.body,
             "footers": [{"token": f[0], "value": f[1]} for f in self.footers],
+            "co_authors": self.co_authors,
             "is_merge_commit": self.is_merge_commit,
             "is_revert_commit": self.is_revert_commit,
         }
